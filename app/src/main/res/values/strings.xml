@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Namaz Vakitleri</string>
+
+    <string name="next_prayer">Sıradaki vakit</string>
+    <string name="today">Bugün</string>
+    <string name="settings">Ayarlar</string>
+    <string name="back">‹ Geri</string>
+
+    <string name="adhan">Ezan</string>
+    <string name="play_adhan">Ezanı çal</string>
+    <string name="sound_full">Tam</string>
+    <string name="sound_mid">Orta</string>
+    <string name="sound_short">Kısa</string>
+    <string name="sound_note">Orta ezan, tam kaydın ilk iki şehadet cümlesini içerir.</string>
+    <string name="play_for">Ezan çalınacak vakitler</string>
+    <string name="preview">Dinle</string>
+    <string name="stop">Durdur</string>
+    <string name="audio_note">Ses dosyası çalınamazsa uygulama sessiz kalmak yerine bildirim gösterir.</string>
+    <string name="credits">Ezan kayıtları: “Beautiful adhan” (CC0) ve “Adhan” (CC0), Wikimedia Commons.</string>
+
+    <string name="location">Konum</string>
+    <string name="location_note">Yalnızca bu cihazda saklanır. Namaz vakitleri çevrimdışı hesaplanır.</string>
+    <string name="latitude">Enlem</string>
+    <string name="longitude">Boylam</string>
+    <string name="use_location">Mevcut konumumu al</string>
+    <string name="calculation">Hesaplama yöntemi</string>
+    <string name="calc_note">İkindi vakti Şâfiî yöntemine göredir. Çok yüksek enlemlerde vakitler yaklaşık hesaplanır.</string>
+    <string name="fajr_adjustment">İmsak vaktine eklenecek süre</string>
+    <string name="fajr_adjustment_note">Diyanet imsak vaktinden sonra ezan için varsayılan: 20 dakika.</string>
+    <string name="minute_option">%1$d dakika</string>
+
+    <string name="reliability">Ezanın zamanında çalması</string>
+    <string name="battery_settings">Pil kısıtlamalarını kaldır</string>
+    <string name="allow_exact">Kesin alarm izni ver</string>
+    <string name="enable_notifications">Bildirimleri etkinleştir</string>
+    <string name="save">Kaydet</string>
+    <string name="reliability_note">En iyi sonuç için kesin alarm iznini verin, pil kısıtlamalarını kaldırın, alarm sesini açın ve Rahatsız Etmeyin’de alarmlara izin verin. Android; cihaz kapalıysa, uygulama Zorla durdurulduysa veya üretici uygulamayı engelliyorsa ezanı garantiyle çaldıramaz.</string>
+    <string name="location_missing">Konumunuzu ayarlayın</string>
+    <string name="location_missing_hint">Ayarlar’a dokunup konumunuzu alın veya koordinat girin</string>
+    <string name="location_needed">Konum gerekli</string>
+
+    <string name="next_time_today">saat %1$s</string>
+    <string name="next_time_tomorrow">yarın saat %1$s</string>
+    <string name="adhan_off">Ezan kapalı</string>
+    <string name="adhan_on">Ezan açık</string>
+    <string name="prayer_adhan_enabled">%1$s ezanı açık</string>
+    <string name="prayer_adhan_off">Ezan kapalı</string>
+    <string name="location_not_set">Konum ayarlanmadı</string>
+    <string name="warning_location">Konum gerekli</string>
+    <string name="warning_exact_alarm">Kesin alarm izni gerekli</string>
+    <string name="warning_battery">Pil kısıtlaması var</string>
+    <string name="battery_message">Şarj etmeniz iyi olur</string>
+    <string name="battery_reassurance">Ezan vakitleri ve alarmlar çalışmaya devam edecek.</string>
+    <string name="battery_percent_accessibility">Pil seviyesi: yüzde %1$d</string>
+
+    <string name="gps_no_fix">Konum bulunamadı. Biraz bekleyin veya koordinatları elle girin.</string>
+    <string name="gps_last_known">Son bilinen konum kullanılıyor; kontrol edip kaydedin.</string>
+    <string name="gps_off">Konum servisleri kapalı. Lütfen cihaz ayarlarından açın.</string>
+    <string name="gps_found">Konum bulundu; kontrol edip kaydedin.</string>
+    <string name="gps_waiting">Konum bekleniyor…</string>
+    <string name="location_permission_needed">Konum izni gerekiyor.</string>
+    <string name="location_permission_denied">İzin verilmedi. Koordinatları elle girebilirsiniz.</string>
+    <string name="latitude_error">Enlem -90 ile 90 arasında olmalı</string>
+    <string name="longitude_error">Boylam -180 ile 180 arasında olmalı</string>
+    <string name="saved">Kaydedildi</string>
+    <string name="timezone_device">Saat dilimi: cihaz ayarı (UTC%1$s), otomatik</string>
+    <string name="exact_allowed">Kesin alarmlara izin verildi</string>
+    <string name="exact_not_allowed">Kesin alarm izni yok — ezan gecikebilir</string>
+    <string name="notifications_allowed">Bildirimlere izin verildi</string>
+    <string name="notifications_off">Bildirimler kapalı — ezan yine çalar, ancak durdurma bildirimi görünmeyebilir</string>
+    <string name="battery_allowed">Pil kısıtlaması kaldırıldı</string>
+    <string name="battery_restricted">Pil optimizasyonu etkin — bazı cihazlarda gecikme olabilir</string>
+
+    <string name="notification_playing_title">Ezan — %1$s</string>
+    <string name="notification_playing_text">Ezan çalıyor</string>
+    <string name="notification_stop">Durdur</string>
+    <string name="notification_problem_title">Ezan çalınamadı</string>
+    <string name="audio_missing">Ezan ses dosyası bulunamadı.</string>
+    <string name="audio_failed">Ezan sesi çalınamadı.</string>
+    <string name="channel_playback">Ezan çalma bildirimi</string>
+    <string name="channel_playback_description">Ezan çalarken gösterilir</string>
+    <string name="channel_alerts">Ezan uyarıları</string>
+    <string name="channel_alerts_description">Ezan sesi eksikse veya çalınamazsa gösterilir</string>
+</resources>
