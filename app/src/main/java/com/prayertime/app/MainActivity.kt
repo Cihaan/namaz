@@ -38,7 +38,8 @@ class MainActivity : Activity() {
     private lateinit var todayDate: TextView
     private lateinit var adhanState: TextView
     private lateinit var warning: TextView
-    private lateinit var chargingOverlay: View
+    private lateinit var batteryIndicator: View
+    private lateinit var batteryIndicatorDot: View
     private lateinit var batteryPercent: TextView
 
     private val rows = LinkedHashMap<Prayer, Row>()
@@ -54,6 +55,7 @@ class MainActivity : Activity() {
     private var settings: PrayerSettings? = null
     private var zone: ZoneId = ZoneId.systemDefault()
     private var day: LocalDate = LocalDate.now(zone)
+    private var rowsMinute: Long = Long.MIN_VALUE
     private var timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.forLanguageTag("tr-TR"))
     private var todayTimes: Map<Prayer, ZonedDateTime> = emptyMap()
     private var upcoming: List<Slot> = emptyList()
@@ -78,7 +80,8 @@ class MainActivity : Activity() {
         todayDate = findViewById(R.id.todayDate)
         adhanState = findViewById(R.id.adhanState)
         warning = findViewById(R.id.warning)
-        chargingOverlay = findViewById(R.id.chargingOverlay)
+        batteryIndicator = findViewById(R.id.batteryIndicator)
+        batteryIndicatorDot = findViewById(R.id.batteryIndicatorDot)
         batteryPercent = findViewById(R.id.batteryPercent)
 
         buildRows(findViewById(R.id.prayerRows))
@@ -96,8 +99,8 @@ class MainActivity : Activity() {
         super.onResume()
         hideSystemBars()
         rebuild()
-        AdhanScheduler.scheduleAll(this)
         registerBatteryReceiver()
+        AdhanScheduler.scheduleAll(this)
         handler.removeCallbacks(tick)
         handler.post(tick)
     }
@@ -139,6 +142,7 @@ class MainActivity : Activity() {
         zone = ZoneId.systemDefault()
         settings = prefs.settings()
         day = LocalDate.now(zone)
+        rowsMinute = Long.MIN_VALUE
         val turkish = Locale.forLanguageTag("tr-TR")
         timeFormat = if (DateFormat.is24HourFormat(this)) {
             DateTimeFormatter.ofPattern("HH:mm", turkish)
@@ -148,6 +152,8 @@ class MainActivity : Activity() {
         todayDate.text = DateTimeFormatter.ofPattern("EEE d MMM", turkish).format(day)
 
         val current = settings ?: return
+        updateWarning(current)
+        updateFooter(current)
         if (!current.locationSet) {
             todayTimes = emptyMap()
             upcoming = emptyList()
@@ -172,11 +178,9 @@ class MainActivity : Activity() {
         if (LocalDate.now(zone) != day) rebuild()
 
         val current = settings ?: return
-        updateWarning(current)
 
         if (!current.locationSet) {
             showMissingLocation()
-            updateFooter(current)
             return
         }
 
@@ -197,8 +201,11 @@ class MainActivity : Activity() {
             }
         }
 
-        updateRows(now, next)
-        updateFooter(current)
+        val currentMinute = now.epochSecond / 60L
+        if (currentMinute != rowsMinute) {
+            updateRows(now, next)
+            rowsMinute = currentMinute
+        }
         checkPlayback(now, current)
     }
 
@@ -308,21 +315,40 @@ class MainActivity : Activity() {
         val level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
         val scale = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
         if (level < 0 || scale <= 0) {
-            chargingOverlay.visibility = View.GONE
+            batteryIndicator.visibility = View.GONE
             return
         }
 
         val percentage = (level * 100f / scale).toInt().coerceIn(0, 100)
         val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN)
-        val charging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
-            status == BatteryManager.BATTERY_STATUS_FULL
-        batteryPercent.text = "$percentage%"
-        batteryPercent.contentDescription = getString(R.string.battery_percent_accessibility, percentage)
-        chargingOverlay.visibility = if (percentage <= BATTERY_REMINDER_PERCENT && !charging) {
-            View.VISIBLE
-        } else {
-            View.GONE
+        val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
+        val (background, dot, state) = when {
+            percentage <= BATTERY_CRITICAL_PERCENT -> Triple(
+                R.drawable.battery_indicator_critical_bg,
+                R.drawable.battery_dot_critical,
+                R.string.battery_state_critical
+            )
+            percentage <= BATTERY_LOW_PERCENT -> Triple(
+                R.drawable.battery_indicator_low_bg,
+                R.drawable.battery_dot_low,
+                R.string.battery_state_low
+            )
+            else -> Triple(
+                R.drawable.battery_indicator_ok_bg,
+                R.drawable.battery_dot_ok,
+                R.string.battery_state_ok
+            )
         }
+        batteryIndicator.setBackgroundResource(background)
+        batteryIndicatorDot.setBackgroundResource(dot)
+        batteryPercent.text = getString(R.string.battery_level, percentage) +
+            if (charging) " · ${getString(R.string.battery_charging)}" else ""
+        batteryPercent.contentDescription = getString(
+            R.string.battery_status_accessibility,
+            percentage,
+            getString(state)
+        )
+        batteryIndicator.visibility = View.VISIBLE
     }
 
     /**
@@ -370,6 +396,7 @@ class MainActivity : Activity() {
 
     private companion object {
         const val REQUEST_NOTIFICATIONS = 100
-        const val BATTERY_REMINDER_PERCENT = 30
+        const val BATTERY_LOW_PERCENT = 30
+        const val BATTERY_CRITICAL_PERCENT = 15
     }
 }

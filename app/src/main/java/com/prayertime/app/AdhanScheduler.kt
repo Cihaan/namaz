@@ -9,9 +9,9 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 /**
- * Schedules one exact alarm per enabled prayer, eight days ahead.
- * Alarms are re-created whenever the app opens, after boot, and after time changes,
- * so scheduled playback does not depend on the app being open or on a network connection.
+ * Schedules one exact alarm per enabled prayer, eight days ahead. The window is extended
+ * one day at a time as its final scheduled date is reached, instead of rebuilding all alarms
+ * after every prayer. Alarms are rebuilt on app open, boot, and time/permission changes.
  */
 object AdhanScheduler {
 
@@ -36,18 +36,37 @@ object AdhanScheduler {
             for (prayer in Prayer.entries) cancel(app, alarmManager, date, prayer)
         }
 
-        if (!settings.locationSet || !settings.adhanEnabled) return
+        if (!settings.locationSet || !settings.adhanEnabled) {
+            prefs.scheduledThroughEpochDay = today.minusDays(1).toEpochDay()
+            return
+        }
 
         for (dayOffset in 0L..DAYS_AHEAD) {
             val date = today.plusDays(dayOffset)
-            val times = PrayerTimes.forDate(date, zone, settings)
-            for ((prayer, time) in times) {
-                if (settings.enabled[prayer] != true) continue
-                val triggerAt = time.toInstant().toEpochMilli()
-                if (triggerAt <= now) continue
-                set(app, alarmManager, date, prayer, triggerAt)
-            }
+            scheduleDate(app, alarmManager, settings, zone, date, now)
         }
+        prefs.scheduledThroughEpochDay = today.plusDays(DAYS_AHEAD).toEpochDay()
+    }
+
+    /** Extend the rolling window only when an alarm from its final scheduled day fires. */
+    fun extendAfterAlarm(context: Context, firedDate: LocalDate) {
+        val app = context.applicationContext
+        val prefs = Prefs(app)
+        val settings = prefs.settings()
+        if (!settings.locationSet || !settings.adhanEnabled) return
+
+        val scheduledThrough = prefs.scheduledThroughEpochDay
+        if (scheduledThrough == Long.MIN_VALUE || firedDate.toEpochDay() > scheduledThrough) {
+            scheduleAll(app)
+            return
+        }
+        if (firedDate.toEpochDay() != scheduledThrough) return
+
+        val zone = ZoneId.systemDefault()
+        val alarmManager = app.getSystemService(AlarmManager::class.java)
+        val nextDate = LocalDate.ofEpochDay(scheduledThrough).plusDays(1)
+        scheduleDate(app, alarmManager, settings, zone, nextDate, System.currentTimeMillis())
+        prefs.scheduledThroughEpochDay = nextDate.toEpochDay()
     }
 
     fun exactAlarmsAllowed(context: Context): Boolean {
@@ -74,6 +93,23 @@ object AdhanScheduler {
             }
         } catch (_: SecurityException) {
             alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerAt, operation)
+        }
+    }
+
+    private fun scheduleDate(
+        context: Context,
+        alarmManager: AlarmManager,
+        settings: PrayerSettings,
+        zone: ZoneId,
+        date: LocalDate,
+        now: Long
+    ) {
+        val times = PrayerTimes.forDate(date, zone, settings)
+        for ((prayer, time) in times) {
+            if (settings.enabled[prayer] != true) continue
+            val triggerAt = time.toInstant().toEpochMilli()
+            if (triggerAt <= now) continue
+            set(context, alarmManager, date, prayer, triggerAt)
         }
     }
 

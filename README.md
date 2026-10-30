@@ -10,7 +10,7 @@ A simple, landscape-only Android app for daily prayer times and adhan playback. 
 - A configurable **0–30 minute imsak adjustment**, defaulting to **+20 minutes**. The adjustment applies to the selected calculation method.
 - Full, medium, and short adhan options. The medium recording is the beginning of the full recording, at its original speed, ending after the second shahada.
 - Global and per-prayer adhan switches, plus preview and Stop controls.
-- A large, calm amber charge reminder at **30% battery or lower**. It is hidden while charging and does not interrupt or change scheduled alarms or audio playback. It appears over the clock while the app is open.
+- A compact battery indicator below the countdown: green above 30%, amber at 16–30%, and red at 15% or lower. It also shows when the phone is charging and never interrupts or changes adhan playback.
 - Location can be obtained from available device location providers or entered manually. Coordinates are stored locally.
 
 ## Build
@@ -48,7 +48,7 @@ The app supports Android 8.0 (API 26) and later. The project uses native Android
 4. On Android 12 and later, grant **Kesin alarm izni** (exact-alarm access) in Settings for the most punctual playback. Allow notifications on Android 13 and later so the playback notification and Stop action are visible.
 5. To reduce delays on devices with aggressive power management, allow the app to ignore battery optimization. Also make sure alarm volume is audible and that Do Not Disturb allows alarms.
 
-The app schedules alarms locally and refreshes them after reboot, app updates, clock or timezone changes, and exact-alarm permission changes. The device's current timezone is used automatically when calculating and displaying times.
+The app schedules alarms locally and refreshes them after reboot, app updates, clock or timezone changes, and exact-alarm permission changes. It extends its rolling alarm window one day at a time instead of rebuilding every scheduled alarm after each prayer. The device's current timezone is used automatically when calculating and displaying times. The main clock keeps the display awake while it is open; screen brightness and the display itself remain the largest power consumers. Background countdown updates stop when the main screen is no longer active.
 
 ## Android playback limitations
 

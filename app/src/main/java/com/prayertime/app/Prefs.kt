@@ -41,6 +41,13 @@ class Prefs(context: Context) {
         get() = sp.getBoolean(KEY_NOTIFICATION_ASKED, false)
         set(value) = sp.edit().putBoolean(KEY_NOTIFICATION_ASKED, value).apply()
 
+    var scheduledThroughEpochDay: Long
+        get() = sp.getLong(KEY_SCHEDULED_THROUGH, Long.MIN_VALUE)
+        @SuppressLint("ApplySharedPref")
+        set(value) {
+            sp.edit().putLong(KEY_SCHEDULED_THROUGH, value).commit()
+        }
+
     fun isPrayerEnabled(prayer: Prayer): Boolean = sp.getBoolean(prayer.prefKey, true)
 
     fun setPrayerEnabled(prayer: Prayer, enabled: Boolean) {
@@ -87,6 +94,7 @@ class Prefs(context: Context) {
         const val KEY_LONGITUDE = "longitude"
         const val KEY_LOCATION_SET = "location_set"
         const val KEY_NOTIFICATION_ASKED = "notification_asked"
+        const val KEY_SCHEDULED_THROUGH = "scheduled_through_epoch_day"
     }
 }
 

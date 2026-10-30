@@ -50,9 +50,12 @@
     <string name="warning_location">Konum gerekli</string>
     <string name="warning_exact_alarm">Kesin alarm izni gerekli</string>
     <string name="warning_battery">Pil kısıtlaması var</string>
-    <string name="battery_message">Şarj etmeniz iyi olur</string>
-    <string name="battery_reassurance">Ezan vakitleri ve alarmlar çalışmaya devam edecek.</string>
-    <string name="battery_percent_accessibility">Pil seviyesi: yüzde %1$d</string>
+    <string name="battery_level">Pil %1$d%%</string>
+    <string name="battery_charging">şarj oluyor</string>
+    <string name="battery_state_ok">iyi</string>
+    <string name="battery_state_low">düşük</string>
+    <string name="battery_state_critical">çok düşük</string>
+    <string name="battery_status_accessibility">Pil seviyesi yüzde %1$d, %2$s</string>
 
     <string name="gps_no_fix">Konum bulunamadı. Biraz bekleyin veya koordinatları elle girin.</string>
     <string name="gps_last_known">Son bilinen konum kullanılıyor; kontrol edip kaydedin.</string>

@@ -23,14 +23,15 @@ class AdhanReceiver : BroadcastReceiver() {
 
         val epochDay = intent.getLongExtra(AdhanScheduler.EXTRA_EPOCH_DAY, LocalDate.now().toEpochDay())
         val prefs = Prefs(context)
+        val date = LocalDate.ofEpochDay(epochDay)
 
         // The only reason to skip is that the user disabled this prayer (or all adhan).
         if (!prefs.adhanEnabled || !prefs.isPrayerEnabled(prayer)) {
-            AdhanScheduler.scheduleAll(context)
+            AdhanScheduler.extendAfterAlarm(context, date)
             return
         }
 
-        AdhanService.playForPrayer(context, prayer, LocalDate.ofEpochDay(epochDay), prefs.sound)
-        AdhanScheduler.scheduleAll(context)
+        AdhanService.playForPrayer(context, prayer, date, prefs.sound)
+        AdhanScheduler.extendAfterAlarm(context, date)
     }
 }
